@@ -11,5 +11,7 @@ public class IndexTest {
         for (int i = 0; i < indexes.size(); i++) {
             System.out.println("Document: " + indexes.get(i));
         }
+
+        
     }
 }
