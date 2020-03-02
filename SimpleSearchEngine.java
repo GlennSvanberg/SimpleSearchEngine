@@ -14,36 +14,43 @@ public class SimpleSearchEngine {
     }
 
     private void calculateRelevance() {
-        List<String> allTerms = new ArrayList<>();
         List<String[]> documentTerms = new ArrayList<>();
 
         for (String document : documents) {
             String[] terms = document.split(" ");
             documentTerms.add(terms);
-
-            for (int i = 0; i < terms.length; i++) {
-                allTerms.add(terms[i]);
-            }
         }
-        calculateIDF(allTerms);
+        calculateIDF(documentTerms);
         calculateTF(documentTerms);
         printWords();
 
     }
 
-    private void calculateIDF(List<String> terms) {
-        for (String term : terms) {
-            if (words.get(term) == null) {
-                int occurences = 0;
-                for (String t : terms) {
-                    if (t.equals(term)) {
-                        occurences++;
-                    }
+    private int calculateOccurences(List<String[]> documentWords, String term) {
+        int occurences = 0;
+        for (String[] document : documentWords) {
+            for (int i = 0; i < document.length; i++) {
+                if (document[i].equals(term)) {
+                    occurences++;
+                    break;
                 }
-                Double IDF = Double.valueOf(occurences) / terms.size();
-                Word word = new Word(term);
-                word.setIDF(IDF);
-                words.put(term, word);
+            }
+        }
+        return occurences;
+    }
+
+    private void calculateIDF(List<String[]> documentWords) {
+        for (String[] document : documentWords) {
+            for (int i = 0; i < document.length; i++) {
+                if (words.get(document[i]) == null) {
+                    int occurences = calculateOccurences(documentWords, document[i]);
+
+                    Double IDF = Math.log(document.length / Double.valueOf(occurences));
+                    Word word = new Word(document[i]);
+                    word.setIDF(IDF);
+                    word.setTotalOccurences(occurences);
+                    words.put(document[i], word);
+                }
             }
         }
     }
@@ -56,8 +63,8 @@ public class SimpleSearchEngine {
 
     private void printWords() {
         for (Map.Entry<String, Word> entry : words.entrySet()) {
-            System.out.println("Key:" + entry.getKey() + " Word:" + entry.getValue().getName() + " IDF:"
-                    + entry.getValue().getIDF());
+            System.out.println("IDF:" + entry.getValue().getIDF() + " Occurs in nr of files: "
+                    + entry.getValue().getTotalOccurences() + " Key:" + entry.getKey());
         }
     }
 
