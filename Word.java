@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Word {
     private String name;
@@ -23,8 +21,12 @@ public class Word {
     }
 
     public List<Integer> getDocumentIndex() {
-        // Sort the map and return list of indexes in order
+
         List<Integer> indexes = new ArrayList<>();
+        for (DocumentReference dr : documents) {
+            indexes.add(dr.getIndex());
+        }
+        return indexes;
 
     }
 }
