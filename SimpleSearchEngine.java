@@ -74,19 +74,31 @@ public class SimpleSearchEngine {
      * terms in the document)
      */
     private void calculateTF(List<String[]> documentTerms) {
-        for (String[] document : documentTerms) {
-            for (int i = 0; i < document.length; i++) {
-                int occurences = calculateOccurences(document, document[i]);
+
+        for (int i = 0; i < documentTerms.size(); i++) {
+            String[] document = documentTerms.get(i);
+
+            for (int j = 0; j < document.length; j++) {
+                int occurences = calculateOccurences(document, document[j]);
                 double tf = Double.valueOf(occurences) / document.length;
-                System.out.println(i + " TF: " + tf + " word: " + document[i]);
+                double relevance = words.get(document[j]).getIDF() * tf;
+                words.get(document[j]).addDocument(i, relevance);
             }
         }
     }
 
     private void printWords() {
         for (Map.Entry<String, Word> entry : words.entrySet()) {
-            System.out.println("IDF:" + entry.getValue().getIDF() + " Occurs in nr of files: "
-                    + entry.getValue().getTotalOccurences() + " Key:" + entry.getKey());
+            // System.out.println("IDF:" + entry.getValue().getIDF() + " Occurs in nr of
+            // files: "
+            // + entry.getValue().getTotalOccurences() + " Key:" + entry.getKey());
+
+            for (int i = 0; i < entry.getValue().getDocumentReferences().size(); i++) {
+                String t = "Index:" + entry.getValue().getDocumentReferences().get(i).getIndex() + " Relevance: "
+                        + entry.getValue().getDocumentReferences().get(i).getRelevance();
+                String word = entry.getValue().getName();
+                System.out.println(t + " word: " + word);
+            }
         }
     }
 

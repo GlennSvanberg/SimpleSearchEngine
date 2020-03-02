@@ -39,6 +39,10 @@ public class Word {
         Collections.sort(documents);
     }
 
+    public List<DocumentReference> getDocumentReferences() {
+        return documents;
+    }
+
     public List<Integer> getDocumentIndex() {
 
         List<Integer> indexes = new ArrayList<>();
