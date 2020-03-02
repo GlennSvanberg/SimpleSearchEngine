@@ -3,22 +3,16 @@ import java.util.Collections;
 import java.util.List;
 
 public class Word {
-    private String name;
     private List<DocumentReference> documents;
-    private double IDF;
+    private double idf;
 
-    public Word(String name, double IDF) {
-        this.name = name;
-        this.IDF = IDF;
+    public Word(double idf) {
+        this.idf = idf;
         documents = new ArrayList<>();
     }
 
-    public double getIDF() {
-        return IDF;
-    }
-
-    public String getName() {
-        return name;
+    public double getIdf() {
+        return idf;
     }
 
     public void addDocument(int index, double relevance) {
