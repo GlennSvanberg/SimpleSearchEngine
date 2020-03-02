@@ -26,7 +26,7 @@ public class SimpleSearchEngine {
 
     }
 
-    private int calculateOccurences(List<String[]> documentWords, String term) {
+    private int calculateDocumentOccurences(List<String[]> documentWords, String term) {
         int occurences = 0;
         for (String[] document : documentWords) {
             for (int i = 0; i < document.length; i++) {
@@ -39,11 +39,15 @@ public class SimpleSearchEngine {
         return occurences;
     }
 
+    /*
+     * IDF(t) = log_e(Total number of documents / Number of documents with term t in
+     * it).
+     */
     private void calculateIDF(List<String[]> documentWords) {
         for (String[] document : documentWords) {
             for (int i = 0; i < document.length; i++) {
                 if (words.get(document[i]) == null) {
-                    int occurences = calculateOccurences(documentWords, document[i]);
+                    int occurences = calculateDocumentOccurences(documentWords, document[i]);
 
                     Double IDF = Math.log(document.length / Double.valueOf(occurences));
                     Word word = new Word(document[i]);
@@ -55,9 +59,27 @@ public class SimpleSearchEngine {
         }
     }
 
-    private void calculateTF(List<String[]> documentTerms) {
-        for (String[] words : documentTerms) {
+    private int calculateOccurences(String[] document, String term) {
+        int occurences = 0;
+        for (int i = 0; i < document.length; i++) {
+            if (document[i].equals(term)) {
+                occurences++;
+            }
+        }
+        return occurences;
+    }
 
+    /*
+     * TF(t) = (Number of times term t appears in a document) / (Total number of
+     * terms in the document)
+     */
+    private void calculateTF(List<String[]> documentTerms) {
+        for (String[] document : documentTerms) {
+            for (int i = 0; i < document.length; i++) {
+                int occurences = calculateOccurences(document, document[i]);
+                double tf = Double.valueOf(occurences) / document.length;
+                System.out.println(i + " TF: " + tf + " word: " + document[i]);
+            }
         }
     }
 
