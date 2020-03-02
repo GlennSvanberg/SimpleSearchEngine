@@ -14,14 +14,13 @@ public class SimpleSearchEngine {
     }
 
     public List<String> query(String term) {
-        List<Integer> indexes = wordIndex.get(term).getDocumentIndexes();
+        List<DocumentReference> references = wordIndex.get(term).getDocumentReferences();
         List<String> result = new ArrayList<>();
-        for(int i = 0; i < indexes.size(); i++) {
-            result.add(documents.get(indexes.get(i)));
+        for (int i = 0; i < references.size(); i++) {
+            result.add(documents.get(references.get(i).getIndex()));
         }
         return result;
     }
-
 
     private void calculateRelevance() {
         List<String[]> documentTerms = new ArrayList<>();
@@ -32,8 +31,6 @@ public class SimpleSearchEngine {
         }
         calculateIDF(documentTerms);
         calculateTF(documentTerms);
-        printWords();
-
     }
 
     private int calculateOccurencesInDocuments(List<String[]> documentWords, String term) {
@@ -60,8 +57,7 @@ public class SimpleSearchEngine {
                     int occurences = calculateOccurencesInDocuments(documentWords, document[i]);
 
                     Double IDF = Math.log(document.length / Double.valueOf(occurences));
-                    Word word = new Word(document[i]);
-                    word.setIDF(IDF);
+                    Word word = new Word(document[i], IDF);
                     wordIndex.put(document[i], word);
                 }
             }
@@ -88,12 +84,26 @@ public class SimpleSearchEngine {
             String[] document = documentTerms.get(i);
 
             for (int j = 0; j < document.length; j++) {
-                int occurences = calculateOccurences(document, document[j]);
-                double tf = Double.valueOf(occurences) / document.length;
-                double relevance = wordIndex.get(document[j]).getIDF() * tf;
-                wordIndex.get(document[j]).addDocument(i, relevance);
+                if (!documentIsAddedToIndex(i, document[j])) {
+                    int occurences = calculateOccurences(document, document[j]);
+                    double tf = Double.valueOf(occurences) / document.length;
+                    double relevance = wordIndex.get(document[j]).getIDF() * tf;
+                    wordIndex.get(document[j]).addDocument(i, relevance);
+                }
+
             }
         }
+    }
+
+    private boolean documentIsAddedToIndex(int index, String term) {
+
+        List<DocumentReference> references = wordIndex.get(term).getDocumentReferences();
+        for (DocumentReference dr : references) {
+            if (dr.getIndex() == index) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void printWords() {

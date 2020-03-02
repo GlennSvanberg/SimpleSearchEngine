@@ -10,10 +10,10 @@ public class Test {
 
         SimpleSearchEngine SSE = new SimpleSearchEngine(documents);
 
-        List<String> result = SSE.query("jumped");
-        
+        List<String> result = SSE.query("the");
+
         // prints the document for every time the word occurs in the document
-        for(int i = 0; i < result.size(); i++) {
+        for (int i = 0; i < result.size(); i++) {
             System.out.println(i + " " + result.get(i));
         }
     }

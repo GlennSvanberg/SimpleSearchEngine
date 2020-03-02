@@ -7,15 +7,11 @@ public class Word {
     private List<DocumentReference> documents;
     private double IDF;
 
-    public Word(String name) {
+    public Word(String name, double IDF) {
         this.name = name;
+        this.IDF = IDF;
         documents = new ArrayList<>();
     }
-
-    public void setIDF(double IDF) {
-        this.IDF = IDF;
-    }
-
 
     public double getIDF() {
         return IDF;
@@ -32,14 +28,5 @@ public class Word {
 
     public List<DocumentReference> getDocumentReferences() {
         return documents;
-    }
-
-    public List<Integer> getDocumentIndexes() {
-
-        List<Integer> indexes = new ArrayList<>();
-        for (DocumentReference dr : documents) {
-            indexes.add(dr.getIndex());
-        }
-        return indexes;
     }
 }
