@@ -8,42 +8,43 @@ public class SimpleSearchEngine {
     private List<String> documents;
 
     public SimpleSearchEngine(List<String> documents) {
+        if (documents.size() == 0) {
+            throw new IllegalArgumentException();
+        }
+
         this.documents = documents;
         wordIndex = new HashMap<>();
-        calculateRelevance();
+
+        List<String[]> documentWordList = parseDocuments();
+        calculateIDF(documentWordList);
+        calculateTF(documentWordList);
     }
 
     public List<String> query(String term) {
-        List<DocumentReference> references = wordIndex.get(term).getDocumentReferences();
         List<String> result = new ArrayList<>();
+        if (wordIndex.get(term) == null) {
+            return result;
+        }
+
+        List<DocumentReference> references = wordIndex.get(term).getDocumentReferences();
+
         for (int i = 0; i < references.size(); i++) {
             result.add(documents.get(references.get(i).getIndex()));
         }
         return result;
     }
 
-    private void calculateRelevance() {
-        List<String[]> documentTerms = new ArrayList<>();
+    private List<String[]> parseDocuments() {
+        List<String[]> documentWordList = new ArrayList<>();
 
         for (String document : documents) {
-            String[] terms = document.split(" ");
-            documentTerms.add(terms);
-        }
-        calculateIDF(documentTerms);
-        calculateTF(documentTerms);
-    }
-
-    private int calculateOccurencesInDocuments(List<String[]> documentWords, String term) {
-        int occurences = 0;
-        for (String[] document : documentWords) {
-            for (int i = 0; i < document.length; i++) {
-                if (document[i].equals(term)) {
-                    occurences++;
-                    break;
-                }
+            String[] words = document.split(" ");
+            for (int i = 0; i < words.length; i++) {
+                words[i] = words[i].toLowerCase();
             }
+            documentWordList.add(words);
         }
-        return occurences;
+        return documentWordList;
     }
 
     /*
@@ -64,11 +65,14 @@ public class SimpleSearchEngine {
         }
     }
 
-    private int calculateOccurences(String[] document, String term) {
+    private int calculateOccurencesInDocuments(List<String[]> documentWords, String term) {
         int occurences = 0;
-        for (int i = 0; i < document.length; i++) {
-            if (document[i].equals(term)) {
-                occurences++;
+        for (String[] document : documentWords) {
+            for (int i = 0; i < document.length; i++) {
+                if (document[i].equals(term)) {
+                    occurences++;
+                    break;
+                }
             }
         }
         return occurences;
@@ -95,6 +99,16 @@ public class SimpleSearchEngine {
         }
     }
 
+    private int calculateOccurences(String[] document, String term) {
+        int occurences = 0;
+        for (int i = 0; i < document.length; i++) {
+            if (document[i].equals(term)) {
+                occurences++;
+            }
+        }
+        return occurences;
+    }
+
     private boolean documentIsAddedToIndex(int index, String term) {
 
         List<DocumentReference> references = wordIndex.get(term).getDocumentReferences();
@@ -105,20 +119,4 @@ public class SimpleSearchEngine {
         }
         return false;
     }
-
-    private void printWords() {
-        for (Map.Entry<String, Word> entry : wordIndex.entrySet()) {
-            // System.out.println("IDF:" + entry.getValue().getIDF() + " Occurs in nr of
-            // files: "
-            // + entry.getValue().getTotalOccurences() + " Key:" + entry.getKey());
-
-            for (int i = 0; i < entry.getValue().getDocumentReferences().size(); i++) {
-                String t = "Index:" + entry.getValue().getDocumentReferences().get(i).getIndex() + " Relevance: "
-                        + entry.getValue().getDocumentReferences().get(i).getRelevance();
-                String word = entry.getValue().getName();
-                System.out.println(t + " word: " + word);
-            }
-        }
-    }
-
 }
