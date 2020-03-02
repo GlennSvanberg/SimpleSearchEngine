@@ -12,6 +12,15 @@ public class SimpleSearchEngine {
         words = new HashMap<>();
         calculateRelevance();
     }
+    public List<String> query(String term) {
+        List<Integer> indexes = words.get(term).getDocumentIndexes();
+        List<String> result = new ArrayList<>();
+        for(int i = 0; i < indexes.size(); i++) {
+            result.add(documents.get(indexes.get(i)));
+        }
+        return result;
+    }
+
 
     private void calculateRelevance() {
         List<String[]> documentTerms = new ArrayList<>();

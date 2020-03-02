@@ -7,7 +7,7 @@ public class IndexTest {
         fox.addDocument(1, 2);
         fox.addDocument(3, 5);
 
-        List<Integer> indexes = fox.getDocumentIndex();
+        List<Integer> indexes = fox.getDocumentIndexes();
         for (int i = 0; i < indexes.size(); i++) {
             System.out.println("Document: " + indexes.get(i));
         }

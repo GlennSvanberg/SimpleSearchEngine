@@ -43,7 +43,7 @@ public class Word {
         return documents;
     }
 
-    public List<Integer> getDocumentIndex() {
+    public List<Integer> getDocumentIndexes() {
 
         List<Integer> indexes = new ArrayList<>();
         for (DocumentReference dr : documents) {
