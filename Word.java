@@ -6,8 +6,6 @@ public class Word {
     private String name;
     private List<DocumentReference> documents;
     private double IDF;
-    // Just for test
-    private int totalOccurences;
 
     public Word(String name) {
         this.name = name;
@@ -18,13 +16,6 @@ public class Word {
         this.IDF = IDF;
     }
 
-    public void setTotalOccurences(int o) {
-        totalOccurences = o;
-    }
-
-    public int getTotalOccurences() {
-        return totalOccurences;
-    }
 
     public double getIDF() {
         return IDF;
